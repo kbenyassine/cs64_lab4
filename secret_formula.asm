@@ -1,6 +1,8 @@
 .data
 comma:      .asciiz ", "
-newline:      .asciiz "\n "
+newline:      .asciiz "\n"
+encrypt: .asciiz "Encrypted: "
+decrypt: .asciiz "Decrypted: "
 krabby: .word 1 2 3 4 5 6 7 8 9 10
 
 carray: .word 0:10
@@ -28,14 +30,6 @@ main:
 		lw $a2 0($t0)
 		jal secret_formula_apply
 		sw $v0 0($t1)
-		
-		li $v0, 1
-        move $a0, $t7
-        syscall
-        li $v0, 4
-        la $a0, comma
-        syscall
-		
 		addiu $t1 $t1 4
 		addiu $t0 $t0 4
 		addi $t7 $t7 1
@@ -73,21 +67,21 @@ secret_formula_apply:
 	mflo $t4
 
 	li $t5 1 
-	li $t6 1
+	li $s3 1
 
 	loop_powone:
-		bgt $t6 $t3 cont_one
+		bgt $s3 $t3 cont_one
 		mult $a2 $t5
 		mflo $t5
-		addi $t6 $t6 1
+		addi $s3 $s3 1
 		j loop_powone
 
 	cont_one:
 
 	div $t5 $t4
-	mfhi $t7
+	mfhi $s4
 
-	move $v0 $t7
+	move $v0 $s4
 	#lw $ra, 0($sp)
 	#addiu $sp, $sp, 4
 	jr $ra
@@ -103,29 +97,176 @@ secret_formula_remove:
 	mflo $t4
 
 	li $t5 1
-	li $t6 1
+	li $s3 1
 
 	loop_powtwo:
-	bgt $t6 $t3 cont_two
+	bgt $s3 $t3 cont_two
 	mult $a2 $t5
 	mflo $t5
-	addi $t6 $t6 1
+	addi $s3 $s3 1
 	j loop_powtwo
 
 	cont_two:
 
 	div $t5 $t4
-	mfhi $t7
+	mfhi $s4
 
-	move $v0 $t7
+	move $v0 $s4
 	#lw $ra, 0($sp)
 	#addiu $sp, $sp, 4
 	jr $ra
 
 
 
-exit:
+exit:	
+		li $v0 4
+		la $a0 encrypt
+		syscall
 
+        la $t0, carray
+
+        li $v0, 1
+        lw $a0, 0($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+        
+        li $v0, 1
+        lw $a0, 4($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 8($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 12($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 16($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 20($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 24($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 28($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 32($t0)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+		
+	li $v0, 1
+        lw $a0, 36($t0)
+        syscall
+	li $v0, 4
+    la $a0, newline
+    syscall
+
+	li $v0 4
+		la $a0 decrypt
+		syscall
+
+        la $t1, marray
+
+        li $v0, 1
+        lw $a0, 0($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+        
+        li $v0, 1
+        lw $a0, 4($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 8($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 12($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 16($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 20($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 24($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 28($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+
+        li $v0, 1
+        lw $a0, 32($t1)
+        syscall
+        li $v0, 4
+        la $a0, comma
+        syscall
+		
+	li $v0, 1
+        lw $a0, 36($t1)
+        syscall
 
 	li $v0, 10
 	syscall

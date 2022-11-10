@@ -108,7 +108,7 @@ colon: .asciiz ":"
             beq $s3 $t9 function_end
 
         #calculate the average 
-        div $t2  $s3 #what register do we divide by? 
+        div $t2 $s3 #what register do we divide by? 
         mflo $t3 #avg 
 
         #This is the main loop  not for free :/
@@ -127,7 +127,7 @@ colon: .asciiz ":"
             #if entry > average put in big array
 
             lw $t4 0($t0)
-            bge $t4 $t3 greater_than
+            bgt $t4 $t3 greater_than
             addi $t6 $t6 1
             sw $t4 0($t1)
 

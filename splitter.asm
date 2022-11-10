@@ -27,7 +27,7 @@ colon: .asciiz ":"
         j exit
     
     disaggregate:
-        addiu $sp $sp 32 #?? = the negative of how many values we store in (stack * 4)
+        addiu $sp $sp -28 #?? = the negative of how many values we store in (stack * 4)
         
         #store all required values that need to be preserved across function calls
         
@@ -47,11 +47,10 @@ colon: .asciiz ":"
         #store big array length on stack
         sw $s4 16($sp)
         sw $s5 20($sp)
-        sw $s6 24($sp)
 
         #multiple function calls overwrite ra, therefore must be preserved
         #store return address
-        sw $ra 28($sp)
+        sw $ra 24($sp)
 
         #print depth value  according to expected format
         la $a0  depth    
@@ -66,7 +65,7 @@ colon: .asciiz ":"
         
         #Don't forget to define your variables!
         li $t7 1 #i
-        ori $t2 $0 0 #sum
+        li $t2 0 #sum
         addiu $t0 $s0 0 #array indexing
 
         #It's dangerous to go alone  take this one loop for free
@@ -102,11 +101,11 @@ colon: .asciiz ":"
             #They are OR'd in the C/C++ template
             #Do you need to OR them in MIPs too? 
     
-            li $t3 1
+            li $t9 1
             li $t8 0
 
             beq $s1 $t8 function_end
-            beq $s3 $t3 function_end
+            beq $s3 $t9 function_end
 
         #calculate the average 
         div $t2  $s3 #what register do we divide by? 
@@ -122,7 +121,7 @@ colon: .asciiz ":"
 
         loop2:
             #find big and small array
-            bgt $t5 $s3 closing #this is the loop exit condition
+            bge $t5 $s3 closing #this is the loop exit condition
             #Remember the conditions for splitting
             #if entry <= average put in small array
             #if entry > average put in big array
@@ -152,9 +151,7 @@ colon: .asciiz ":"
             
             #This is updating the buffer so that we don't overwrite our old values
             move $s0 $s2
-            addiu $s2  $s2  40
-            move $s6 $s2
-            addiu $s2  $s2  40
+            addiu $s2  $s2  80
             #We call small array first so we load small array length as arr_len
             move $s3  $s4 
 
@@ -162,12 +159,17 @@ colon: .asciiz ":"
 
             jal disaggregate
 
-            #jal ConventionCheck #DO NOT REMOVE
+            jal ConventionCheck #DO NOT REMOVE
             
-            #Similarly for big array  we mirror the call structure of small array as above
+            #Similarly for big array we mirror the call structure of small array as above
             #But with the values appropriate for big array. 
 
-            move $s0 $s6
+            lw $s1 4($sp)
+            addiu $s1 $s1 -1
+
+            lw $s2 8($sp)
+
+            move $s0 $s2
             #addiu $s2  $s2  80
             #move $s3  $s5 #big array call second
             
@@ -186,10 +188,9 @@ colon: .asciiz ":"
             lw $s3  12($sp)
             lw $s4  16($sp)
             lw $s5  20($sp)
-            lw $s6  24($sp)
-            lw $ra  28($sp)
+            lw $ra  24($sp)
             #Load values before update if you have to
-            addiu $sp $sp 32 #?? = the positive of how many values we store in (stack * 4)
+            addiu $sp $sp 28 #?? = the positive of how many values we store in (stack * 4)
             #Load values after update if you have to
             jr $ra
         

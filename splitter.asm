@@ -27,7 +27,7 @@ colon: .asciiz ":"
         j exit
     
     disaggregate:
-        addiu $sp $sp 28 #?? = the negative of how many values we store in (stack * 4)
+        addiu $sp $sp 32 #?? = the negative of how many values we store in (stack * 4)
         
         #store all required values that need to be preserved across function calls
         
@@ -47,10 +47,11 @@ colon: .asciiz ":"
         #store big array length on stack
         sw $s4 16($sp)
         sw $s5 20($sp)
+        sw $s6 24($sp)
 
         #multiple function calls overwrite ra, therefore must be preserved
         #store return address
-        sw $ra 24($sp)
+        sw $ra 28($sp)
 
         #print depth value  according to expected format
         la $a0  depth    
@@ -102,8 +103,9 @@ colon: .asciiz ":"
             #Do you need to OR them in MIPs too? 
     
             li $t3 1
+            li $t8 0
 
-            beq $s1 $0 function_end
+            beq $s1 $t8 function_end
             beq $s3 $t3 function_end
 
         #calculate the average 
@@ -125,9 +127,9 @@ colon: .asciiz ":"
             #if entry <= average put in small array
             #if entry > average put in big array
 
-            bge $t0 $t3 greater_than
-            addi $t6 $t6 1
             lw $t4 0($t0)
+            bge $t4 $t3 greater_than
+            addi $t6 $t6 1
             sw $t4 0($t1)
 
             addi $t0  $t0  4
@@ -184,9 +186,10 @@ colon: .asciiz ":"
             lw $s3  12($sp)
             lw $s4  16($sp)
             lw $s5  20($sp)
-            lw $ra  24($sp)
+            lw $s6  24($sp)
+            lw $ra  28($sp)
             #Load values before update if you have to
-            addiu $sp  $sp  28 #?? = the positive of how many values we store in (stack * 4)
+            addiu $sp $sp 32 #?? = the positive of how many values we store in (stack * 4)
             #Load values after update if you have to
             jr $ra
         
@@ -222,7 +225,6 @@ ConventionCheck:
 
 greater_than:
         addi $t7 $t7 1
-        lw $t4 0($t0)
         sw $t4 0($t2)
 
         addi $t0  $t0  4

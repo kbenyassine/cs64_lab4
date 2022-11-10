@@ -169,13 +169,14 @@ colon: .asciiz ":"
 
             lw $s2 8($sp)
 
+            addiu $s2  $s2  40
             move $s0 $s2
-            #addiu $s2  $s2  80
-            #move $s3  $s5 #big array call second
+            addiu $s2  $s2  80
+            move $s3  $s5 #big array call second
             
-            #jal disaggregate
+            jal disaggregate
 
-            #j function_end
+            j function_end
         
         function_end:
         #Here we reset our values from previous iterations

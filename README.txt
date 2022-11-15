@@ -6,5 +6,8 @@ until there is one element left in the array or that the depth is equal zero, wh
 At the start of each function call, the values of the input array is printed out. At the start and end of the function,
 we allocate and deallocate our values on the stack so we keep them saved and that they are not overwritten.
 
-2. The space used in the stack will not change even if you change the array length, array values, or depth values. 
-It is because the space need to allocate for any value would be 1 word, or 4 bytes, or 32 bits. Nothing will go beyond that.
+2. The space used in the stack will change if you change the array length. If we increase the array length, that means we
+need to store more values on the stack. Likewise, if we change the depth value, it will change the space we use in the stack.
+If we increase the depth, we are increase the amount of times we call the function, which in turn increase the space we need to ensure
+that we store the values we use. If the depth is n, we call the function a max of 2^n -1. Changing the actual array values does not 
+change the space we use on the stack.
